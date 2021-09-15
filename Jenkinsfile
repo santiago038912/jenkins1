@@ -5,6 +5,10 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building..'
+		
+		dir ('maven-adderapp') {
+			sh 'mvn -DskipTests clean package'
+		}
             }
         }
         stage('Test') {
@@ -21,4 +25,11 @@ pipeline {
     tools {
 	maven "maven-nodo-principal"
 	}
+    post {
+	success {
+		dir ('maven-adderapp') {
+			archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+		}
+	}
+    }
 }
